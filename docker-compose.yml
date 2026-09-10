@@ -1,0 +1,292 @@
+x-stream-relay: &stream-relay
+  build:
+    context: .
+    dockerfile: docker/stream-relay.Dockerfile
+  image: mondial-stream-relay:local
+  restart: unless-stopped
+  depends_on:
+    - icecast
+  env_file:
+    - .env
+  volumes:
+    - ./scripts/stream-relay.sh:/stream-relay.sh:ro
+    - ./scripts/kan11-headers.txt:/kan11-headers.txt:ro
+  entrypoint: ["/bin/sh", "/stream-relay.sh"]
+  networks:
+    - mondial-net
+
+services:
+  icecast:
+    image: moul/icecast
+    container_name: mondial-icecast
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./icecast/icecast.xml:/etc/icecast2/icecast.xml:ro
+    networks:
+      - mondial-net
+
+  stream-relay-1:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-1
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /1
+      STREAM_URL: ${STREAM_1_URL:-}
+      STREAM_URLS: ${STREAM_1_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_1_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_1_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-2:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-2
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /2
+      STREAM_URL: ${STREAM_2_URL:-}
+      STREAM_URLS: ${STREAM_2_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_2_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_2_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-3:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-3
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /3
+      STREAM_URL: ${STREAM_3_URL:-}
+      STREAM_URLS: ${STREAM_3_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_3_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_3_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-4:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-4
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /4
+      STREAM_URL: ${STREAM_4_URL:-}
+      STREAM_URLS: ${STREAM_4_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_4_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_4_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-5:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-5
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /5
+      STREAM_URL: ${STREAM_5_URL:-}
+      STREAM_URLS: ${STREAM_5_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_5_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_5_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-6:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-6
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /6
+      STREAM_URL: ${STREAM_6_URL:-}
+      STREAM_URLS: ${STREAM_6_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_6_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_6_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-7:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-7
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /7
+      STREAM_URL: ${STREAM_7_URL:-}
+      STREAM_URLS: ${STREAM_7_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_7_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_7_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-8:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-8
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /8
+      STREAM_URL: ${STREAM_8_URL:-}
+      STREAM_URLS: ${STREAM_8_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_8_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_8_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-9:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-9
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /9
+      STREAM_URL: ${STREAM_9_URL:-}
+      STREAM_URLS: ${STREAM_9_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_9_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_9_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-10:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-10
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /10
+      STREAM_URL: ${STREAM_10_URL:-}
+      STREAM_URLS: ${STREAM_10_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_10_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_10_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-11:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-11
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /11
+      STREAM_URL: ${STREAM_11_URL:-}
+      STREAM_URLS: ${STREAM_11_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_11_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_11_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-12:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-12
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /12
+      STREAM_URL: ${STREAM_12_URL:-}
+      STREAM_URLS: ${STREAM_12_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_12_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_12_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-13:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-13
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /13
+      STREAM_URL: ${STREAM_13_URL:-}
+      STREAM_URLS: ${STREAM_13_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_13_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_13_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-14:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-14
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /14
+      STREAM_URL: ${STREAM_14_URL:-}
+      STREAM_URLS: ${STREAM_14_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_14_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_14_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-15:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-15
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /15
+      STREAM_URL: ${STREAM_15_URL:-}
+      STREAM_URLS: ${STREAM_15_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_15_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_15_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-16:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-16
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /16
+      STREAM_URL: ${STREAM_16_URL:-}
+      STREAM_URLS: ${STREAM_16_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_16_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_16_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-17:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-17
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /17
+      STREAM_URL: ${STREAM_17_URL:-}
+      STREAM_URLS: ${STREAM_17_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_17_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_17_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-18:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-18
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /18
+      STREAM_URL: ${STREAM_18_URL:-}
+      STREAM_URLS: ${STREAM_18_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_18_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_18_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-19:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-19
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /19
+      STREAM_URL: ${STREAM_19_URL:-}
+      STREAM_URLS: ${STREAM_19_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_19_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_19_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-relay-20:
+    <<: *stream-relay
+    container_name: mondial-stream-relay-20
+    environment:
+      ICECAST_HOST: icecast
+      ICECAST_MOUNT: /20
+      STREAM_URL: ${STREAM_20_URL:-}
+      STREAM_URLS: ${STREAM_20_URLS:-}
+      STREAM_HEADERS_FILE: ${STREAM_20_HEADERS_FILE:-}
+      STREAM_HTTP_PROXY: ${STREAM_20_HTTP_PROXY:-${STREAM_HTTP_PROXY:-}}
+
+  stream-control:
+    image: python:3.12-alpine
+    container_name: mondial-stream-control
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./:/project:ro
+    working_dir: /project
+    command: ["python3", "/project/scripts/stream-control-server.py"]
+
+  freeswitch:
+    image: safarov/freeswitch:latest
+    container_name: mondial-freeswitch
+    restart: unless-stopped
+    depends_on:
+      - icecast
+      - stream-control
+    network_mode: host
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - ./freeswitch/dialplan/public/00_mondial.xml:/usr/share/freeswitch/conf/vanilla/dialplan/public/00_mondial.xml:ro
+      - ./freeswitch/scripts/streamctl.lua:/usr/share/freeswitch/conf/vanilla/scripts/streamctl.lua:ro
+      - ./freeswitch/scripts/live-stream.lua:/usr/share/freeswitch/conf/vanilla/scripts/live-stream.lua:ro
+      - ./freeswitch/sounds/he/streamctl:/usr/share/freeswitch/sounds/he/streamctl:ro
+      - ./freeswitch/sounds/he/live:/usr/share/freeswitch/sounds/he/live:ro
+      - ./freeswitch/autoload_configs/modules.conf.xml:/usr/share/freeswitch/conf/vanilla/autoload_configs/modules.conf.xml:ro
+      - ./freeswitch/autoload_configs/event_socket.conf.xml:/usr/share/freeswitch/conf/vanilla/autoload_configs/event_socket.conf.xml:ro
+      - ./freeswitch/autoload_configs/conference.conf.xml:/usr/share/freeswitch/conf/vanilla/autoload_configs/conference.conf.xml:ro
+      - ./freeswitch/autoload_configs/acl.conf.xml:/usr/share/freeswitch/conf/vanilla/autoload_configs/acl.conf.xml:ro
+      - ./freeswitch/vars.xml:/usr/share/freeswitch/conf/vanilla/vars.xml:ro
+      - ./freeswitch/sip_profiles/external.xml:/usr/share/freeswitch/conf/vanilla/sip_profiles/external.xml:ro
+      - ./scripts/freeswitch-entrypoint.sh:/freeswitch-entrypoint.sh:ro
+    entrypoint: ["/bin/sh", "/freeswitch-entrypoint.sh"]
+    environment:
+      - TZ=Asia/Jerusalem
+
+networks:
+  mondial-net:
+    driver: bridge

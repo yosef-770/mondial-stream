@@ -1,0 +1,215 @@
+<icecast>
+    <location>Israel</location>
+    <admin>admin@localhost</admin>
+    <limits>
+        <clients>200</clients>
+        <sources>30</sources>
+        <source-timeout>90</source-timeout>
+        <queue-size>524288</queue-size>
+    </limits>
+    <authentication>
+        <source-password>change-me-source</source-password>
+        <relay-password>change-me-relay</relay-password>
+        <admin-user>admin</admin-user>
+        <admin-password>change-me-admin</admin-password>
+    </authentication>
+    <hostname>localhost</hostname>
+    <listen-socket>
+        <port>8000</port>
+        <bind-address>0.0.0.0</bind-address>
+    </listen-socket>
+    <mount type="normal">
+        <mount-name>/1</mount-name>
+        <stream-name>Stream 1 / kanbet</stream-name>
+        <stream-description>שידור חי שלוחה 1</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/2</mount-name>
+        <stream-name>Stream 2 / kan11</stream-name>
+        <stream-description>שידור חי שלוחה 2</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/3</mount-name>
+        <stream-name>Stream 3</stream-name>
+        <stream-description>שידור חי שלוחה 3</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/4</mount-name>
+        <stream-name>Stream 4</stream-name>
+        <stream-description>שידור חי שלוחה 4</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/5</mount-name>
+        <stream-name>Stream 5</stream-name>
+        <stream-description>שידור חי שלוחה 5</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/6</mount-name>
+        <stream-name>Stream 6</stream-name>
+        <stream-description>שידור חי שלוחה 6</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/7</mount-name>
+        <stream-name>Stream 7</stream-name>
+        <stream-description>שידור חי שלוחה 7</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/8</mount-name>
+        <stream-name>Stream 8</stream-name>
+        <stream-description>שידור חי שלוחה 8</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/9</mount-name>
+        <stream-name>Stream 9</stream-name>
+        <stream-description>שידור חי שלוחה 9</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/10</mount-name>
+        <stream-name>Stream 10</stream-name>
+        <stream-description>שידור חי שלוחה 10</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/11</mount-name>
+        <stream-name>Stream 11</stream-name>
+        <stream-description>שידור חי שלוחה 11</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/12</mount-name>
+        <stream-name>Stream 12</stream-name>
+        <stream-description>שידור חי שלוחה 12</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/13</mount-name>
+        <stream-name>Stream 13</stream-name>
+        <stream-description>שידור חי שלוחה 13</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/14</mount-name>
+        <stream-name>Stream 14</stream-name>
+        <stream-description>שידור חי שלוחה 14</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/15</mount-name>
+        <stream-name>Stream 15</stream-name>
+        <stream-description>שידור חי שלוחה 15</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/16</mount-name>
+        <stream-name>Stream 16</stream-name>
+        <stream-description>שידור חי שלוחה 16</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/17</mount-name>
+        <stream-name>Stream 17</stream-name>
+        <stream-description>שידור חי שלוחה 17</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/18</mount-name>
+        <stream-name>Stream 18</stream-name>
+        <stream-description>שידור חי שלוחה 18</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/19</mount-name>
+        <stream-name>Stream 19</stream-name>
+        <stream-description>שידור חי שלוחה 19</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <mount type="normal">
+        <mount-name>/20</mount-name>
+        <stream-name>Stream 20</stream-name>
+        <stream-description>שידור חי שלוחה 20</stream-description>
+        <genre>Live</genre>
+        <bitrate>64</bitrate>
+        <type>application/mp3</type>
+        <public>0</public>
+    </mount>
+    <fileserve>1</fileserve>
+    <paths>
+        <logdir>/var/log/icecast2</logdir>
+        <webroot>/usr/share/icecast2/web</webroot>
+        <adminroot>/usr/share/icecast2/admin</adminroot>
+    </paths>
+    <logging>
+        <accesslog>access.log</accesslog>
+        <errorlog>error.log</errorlog>
+        <loglevel>3</loglevel>
+    </logging>
+    <security>
+        <chroot>0</chroot>
+    </security>
+</icecast>

@@ -1,0 +1,69 @@
+# ============================================================
+# הגדרות ימות המשיח — שלוחות SIP ל-FreeSWITCH
+# ============================================================
+# IP שרת (FreeSWITCH):
+#   91.98.89.80:5060
+#
+# אל תשתמש ב-music_on_hold / זרם בימות!
+#
+# חזרה עם #: FreeSWITCH מנתק על # → ימות חוזר שלב אחורה
+# (ברירת מחדל בימות — אל תגדיר routing_ip_end_goto=hangup)
+#
+# שידור כבוי: משמיעים freeswitch/sounds/he/live/off.wav
+# התקנה: ./scripts/set-off-air-audio.sh /path/to/your.mp3
+#
+# מקורות השמע מוגדרים ב-.env:
+#   STREAM_1_URL … STREAM_20_URL
+# ריק = השלוחה לא משדרת.
+
+# איכות: routing_extension=N למנוי, 100+N ללא-מנוי (3 → 103, 12 → 112).
+# אותו IP ופורט. רק המספר משתנה.
+
+# --- שלוחה עם routing_extension=1 (או kanbet) — STREAM_1_URL ---
+type=routing_ip
+routing_ip=91.98.89.80
+routing_ip_port=5060
+routing_extension=1
+routing_ip_dial_time=60
+
+# --- אותו שידור, איכות נמוכה (לא מנוי) ---
+# type=routing_ip
+# routing_ip=91.98.89.80
+# routing_ip_port=5060
+# routing_extension=101
+# routing_ip_dial_time=60
+
+# --- שלוחה עם routing_extension=2 (או kan11) — STREAM_2_URL ---
+# type=routing_ip
+# routing_ip=91.98.89.80
+# routing_ip_port=5060
+# routing_extension=2
+# routing_ip_dial_time=60
+
+# --- שלוחות 3–20 — העתק והחלף את המספר ---
+# type=routing_ip
+# routing_ip=91.98.89.80
+# routing_ip_port=5060
+# routing_extension=3
+# routing_ip_dial_time=60
+
+# --- שלוחת הדלקה / כיבוי שידורים ---
+# type=routing_ip
+# routing_ip=91.98.89.80
+# routing_ip_port=5060
+# routing_extension=streamctl
+# routing_ip_dial_time=30
+# routing_ip_end_goto=hangup
+#
+# תפריט DTMF (אחרי התקשרות):
+#   1 = הדלק הכל
+#   2 = כבה הכל
+#   3 = הדלק שלוחה 1 (kanbet)
+#   4 = הדלק שלוחה 2 (kan11)
+#   5 = כבה שלוחה 1
+#   6 = כבה שלוחה 2
+#
+# כינויים לתאימות לאחור:
+#   routing_extension=kanbet  → שלוחה 1
+#   routing_extension=kan11   → שלוחה 2
+#   routing_extension=mondial → שלוחה 2

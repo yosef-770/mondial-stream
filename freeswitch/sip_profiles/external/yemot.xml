@@ -1,0 +1,16 @@
+<!--
+  ימות המשיח — מלא את הפרטים ב-.env ואז הרץ: ./scripts/apply-yemot-gateway.sh
+  או ערוך ידנית את הקובץ הזה.
+-->
+<include>
+  <!--
+  <gateway name="yemot">
+    <param name="realm" value="YOUR_YEMOT_REALM"/>
+    <param name="proxy" value="YOUR_YEMOT_PROXY"/>
+    <param name="username" value="YOUR_YEMOT_USER"/>
+    <param name="password" value="YOUR_YEMOT_PASSWORD"/>
+    <param name="register" value="false"/>
+    <param name="caller-id-in-from" value="true"/>
+  </gateway>
+  -->
+</include>

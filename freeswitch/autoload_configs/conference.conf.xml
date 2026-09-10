@@ -1,0 +1,22 @@
+<configuration name="conference.conf" description="Mondial live conference">
+  <caller-controls>
+    <group name="default">
+      <control action="hangup" digits="#"/>
+    </group>
+  </caller-controls>
+
+  <profiles>
+    <!-- זרם אחד (perpetual-sound) לכל המשתתפים — לא playback לכל שיחה -->
+    <profile name="mondial-live">
+      <param name="domain" value="$${domain}"/>
+      <param name="rate" value="8000"/>
+      <param name="interval" value="20"/>
+      <param name="channels" value="1"/>
+      <param name="energy-level" value="200"/>
+      <param name="comfort-noise" value="false"/>
+      <param name="max-members" value="2000"/>
+      <param name="perpetual-sound" value="shout://127.0.0.1:8000/mondial"/>
+      <param name="caller-controls" value="default"/>
+    </profile>
+  </profiles>
+</configuration>

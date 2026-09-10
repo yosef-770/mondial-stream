@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<include>
+  <!-- שלוחות 1–20: STREAM_N_URL מ-.env -->
+  <extension name="stream-live">
+    <condition field="destination_number" expression="^([1-9]|1[0-9]|20|10[1-9]|11[0-9]|120)$">
+      <action application="log" data="INFO Stream $1 ${caller_id_number} from ${network_addr}"/>
+      <action application="ring_ready"/>
+      <action application="answer"/>
+      <action application="set" data="absolute_codec_string=PCMU,PCMA"/>
+      <action application="set" data="rtp_timeout_sec=0"/>
+      <action application="set" data="media_timeout=0"/>
+      <action application="lua" data="live-stream.lua $1"/>
+    </condition>
+  </extension>
+
+  <!-- כינויים לתאימות לאחור -->
+  <extension name="kanbet-live">
+    <condition field="destination_number" expression="^kanbet$">
+      <action application="transfer" data="1 XML public"/>
+    </condition>
+  </extension>
+
+  <extension name="kan11-live">
+    <condition field="destination_number" expression="^kan11$">
+      <action application="transfer" data="2 XML public"/>
+    </condition>
+  </extension>
+
+  <extension name="mondial-live-legacy">
+    <condition field="destination_number" expression="^mondial$">
+      <action application="transfer" data="2 XML public"/>
+    </condition>
+  </extension>
+
+  <!-- הדלקה / כיבוי שידורים -->
+  <extension name="stream-control">
+    <condition field="destination_number" expression="^streamctl$">
+      <action application="log" data="INFO Stream control ${caller_id_number} from ${network_addr}"/>
+      <action application="ring_ready"/>
+      <action application="answer"/>
+      <action application="lua" data="streamctl.lua"/>
+    </condition>
+  </extension>
+</include>

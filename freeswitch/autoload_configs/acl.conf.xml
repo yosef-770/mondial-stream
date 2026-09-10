@@ -1,0 +1,8 @@
+<configuration name="acl.conf" description="Network Lists">
+  <network-lists>
+    <!-- ימות המשיח בלבד — חוסם סורקים על פורט 5060 -->
+    <list name="yemot" default="deny">
+      <node type="allow" cidr="185.243.5.118/32"/>
+    </list>
+  </network-lists>
+</configuration>
