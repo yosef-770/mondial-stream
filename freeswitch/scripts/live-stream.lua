@@ -3,6 +3,7 @@
 local API = "http://127.0.0.1:8765"
 local SOUND_DIR = "/usr/share/freeswitch/sounds/he/live"
 local RECONNECT_WAIT_MS = 800
+local RECONNECT_WAIT_MAX_MS = 8000
 local OFF_RETRY_COUNT = 8
 local OFF_RETRY_MS = 1000
 local VOL_STEP = 3
@@ -154,6 +155,7 @@ end
 local shout = "shout://127.0.0.1:8000/" .. mount
 freeswitch.consoleLog("INFO", "live-stream " .. stream .. " quality=" .. quality .. " — " .. shout .. "\n")
 
+local reconnect_wait = RECONNECT_WAIT_MS
 while session:ready() do
   if not is_live() then
     if not wait_until_live() then
@@ -161,6 +163,7 @@ while session:ready() do
       play_off_message()
       break
     end
+    reconnect_wait = RECONNECT_WAIT_MS
   end
 
   freeswitch.consoleLog("INFO", "live-stream " .. stream .. " playing " .. shout .. "\n")
@@ -170,9 +173,13 @@ while session:ready() do
     break
   end
 
-  -- הזרם נגמר (נפילת Icecast/relay) — לא מנתקים, מנסים שוב
-  freeswitch.consoleLog("INFO", "live-stream " .. stream .. " ended — reconnecting\n")
-  session:sleep(RECONNECT_WAIT_MS)
+  -- הזרם נגמר (נפילת Icecast/relay) — לא מנתקים, מנסים שוב עם backoff
+  freeswitch.consoleLog(
+    "INFO",
+    "live-stream " .. stream .. " ended — reconnecting in " .. tostring(reconnect_wait) .. "ms\n"
+  )
+  session:sleep(reconnect_wait)
+  reconnect_wait = math.min(reconnect_wait * 2, RECONNECT_WAIT_MAX_MS)
 end
 
 if session:ready() then

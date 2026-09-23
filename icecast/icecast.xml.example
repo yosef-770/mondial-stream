@@ -2,8 +2,8 @@
     <location>Israel</location>
     <admin>admin@localhost</admin>
     <limits>
-        <clients>200</clients>
-        <sources>30</sources>
+        <clients>300</clients>
+        <sources>50</sources>
         <source-timeout>90</source-timeout>
         <queue-size>524288</queue-size>
     </limits>

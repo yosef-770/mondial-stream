@@ -7,12 +7,18 @@ ICECAST_MOUNT="${ICECAST_MOUNT:-/mondial}"
 ICECAST_SOURCE_PASSWORD="${ICECAST_SOURCE_PASSWORD:?ICECAST_SOURCE_PASSWORD is required}"
 BITRATE="${STREAM_BITRATE:-64k}"
 SAMPLE_RATE="${STREAM_SAMPLE_RATE:-16000}"
-# מונו + פס טלפון + נרמול חי + ריסמפל soxr (קרוב ל-8 kHz של G.711)
-AUDIO_FILTER="${STREAM_AUDIO_FILTER:-aformat=channel_layouts=mono,highpass=f=90,lowpass=f=3400,dynaudnorm=f=300:g=21:m=6:p=0.9:r=0.2,aresample=${SAMPLE_RATE}:resampler=soxr:precision=28}"
+# מונו + פס טלפון + נרמול קל (בלי soxr כבד) — LQ נשאר מעומעם בנפרד למנויים
+AUDIO_FILTER="${STREAM_AUDIO_FILTER:-aformat=channel_layouts=mono,highpass=f=90,lowpass=f=3400,dynaudnorm=f=500:g=11,aresample=${SAMPLE_RATE}}"
 LQ_BITRATE="${STREAM_LQ_BITRATE:-16k}"
 LQ_SAMPLE_RATE="${STREAM_LQ_SAMPLE_RATE:-8000}"
 # לא-מנויים: מעומעם בכוונה (בלי dynaudnorm — הוא ביטל את ההפרש)
 LQ_AUDIO_FILTER="${STREAM_LQ_AUDIO_FILTER:-aformat=channel_layouts=mono,highpass=f=650,lowpass=f=1250,acrusher=bits=5:samples=2:mix=0.75:mode=log,volume=-10dB,aresample=${LQ_SAMPLE_RATE}}"
+
+# Backoff אחרי כשל קצר — מונע סערת reconnect
+RETRY_SLEEP_MIN="${STREAM_RETRY_SLEEP_MIN:-5}"
+RETRY_SLEEP_MAX="${STREAM_RETRY_SLEEP_MAX:-120}"
+RETRY_RESET_AFTER_SEC="${STREAM_RETRY_RESET_AFTER_SEC:-60}"
+RETRY_SLEEP="${RETRY_SLEEP_MIN}"
 
 ICECAST_TARGET="icecast://source:${ICECAST_SOURCE_PASSWORD}@${ICECAST_HOST}:${ICECAST_PORT}${ICECAST_MOUNT}"
 ICECAST_TARGET_LQ="icecast://source:${ICECAST_SOURCE_PASSWORD}@${ICECAST_HOST}:${ICECAST_PORT}${ICECAST_MOUNT}q"
@@ -39,6 +45,7 @@ URL_INDEX=1
 echo "[stream-relay] target: icecast://${ICECAST_HOST}:${ICECAST_PORT}${ICECAST_MOUNT}"
 echo "[stream-relay] encode HQ: mp3 ${BITRATE} ${SAMPLE_RATE}Hz mono → ${ICECAST_MOUNT}"
 echo "[stream-relay] encode LQ: mp3 ${LQ_BITRATE} ${LQ_SAMPLE_RATE}Hz mono → ${ICECAST_MOUNT}q"
+echo "[stream-relay] retry backoff: ${RETRY_SLEEP_MIN}s…${RETRY_SLEEP_MAX}s (reset after ${RETRY_RESET_AFTER_SEC}s uptime)"
 echo "[stream-relay] sources (${URL_COUNT}):"
 printf '%s\n' "${URLS}" | while IFS= read -r u; do
   echo "[stream-relay]   - ${u}"
@@ -89,6 +96,25 @@ advance_url() {
   echo "[stream-relay] failover -> source #${URL_INDEX}/${URL_COUNT}"
 }
 
+# אחרי יציאה: אם רץ מספיק — מאפסים backoff; אחרת מכפילים עד המקסימום
+after_exit_backoff() {
+  started_at="$1"
+  now="$(date +%s)"
+  elapsed=$((now - started_at))
+  if [ "${elapsed}" -ge "${RETRY_RESET_AFTER_SEC}" ]; then
+    RETRY_SLEEP="${RETRY_SLEEP_MIN}"
+    echo "[stream-relay] ran ${elapsed}s — reset backoff to ${RETRY_SLEEP}s"
+  else
+    echo "[stream-relay] exited after ${elapsed}s — retry in ${RETRY_SLEEP}s"
+    sleep "${RETRY_SLEEP}"
+    next=$((RETRY_SLEEP * 2))
+    if [ "${next}" -gt "${RETRY_SLEEP_MAX}" ]; then
+      next="${RETRY_SLEEP_MAX}"
+    fi
+    RETRY_SLEEP="${next}"
+  fi
+}
+
 while true; do
   CURRENT_URL="$(pick_url)"
   USE_HLS_MAP=0
@@ -98,17 +124,19 @@ while true; do
 
   echo "[stream-relay] starting ffmpeg at $(date -Iseconds)"
   echo "[stream-relay] source: ${CURRENT_URL}"
+  START_TS="$(date +%s)"
 
   if is_twitch_signed_playlist "${CURRENT_URL}"; then
     echo "[stream-relay] Twitch signed playlist (ttvnw) expires within minutes."
     echo "[stream-relay] Use a stable URL: https://www.twitch.tv/CHANNEL"
     advance_url
-    sleep 15
+    after_exit_backoff "${START_TS}"
     continue
   fi
 
   if is_twitch_channel "${CURRENT_URL}"; then
-    echo "[stream-relay] twitch via streamlink (audio_only / fallback video)"
+    # audio_only קודם; אם אין — וידאו נמוך בלבד (לא best)
+    echo "[stream-relay] twitch via streamlink (audio_only / low video fallback)"
     set -- streamlink --stdout --loglevel warning \
       --retry-streams 8 \
       --retry-max 6 \
@@ -119,7 +147,7 @@ while true; do
     if [ -n "${STREAM_USER_AGENT:-}" ]; then
       set -- "$@" --http-header "User-Agent=${STREAM_USER_AGENT}"
     fi
-    set -- "$@" "${CURRENT_URL}" "audio_only,480p,360p,worst,best"
+    set -- "$@" "${CURRENT_URL}" "audio_only,160p,360p,worst"
     if ! "$@" | ffmpeg -hide_banner -loglevel warning \
       -fflags +discardcorrupt+genpts+igndts \
       -err_detect ignore_err \
@@ -143,17 +171,18 @@ while true; do
       -content_type audio/mpeg \
       "${ICECAST_TARGET_LQ}"
     then
-      echo "[stream-relay] streamlink/ffmpeg exited, retry in 5s"
+      echo "[stream-relay] streamlink/ffmpeg exited"
       advance_url
     fi
-    sleep 5
+    after_exit_backoff "${START_TS}"
     continue
   fi
 
   if is_x_broadcast "${CURRENT_URL}"; then
     echo "[stream-relay] X/Twitter broadcast via yt-dlp"
+    # bestaudio אם יש; אחרת worst (לא best וידאו)
     set -- yt-dlp --no-warnings --no-playlist \
-      -f "bestaudio/best" \
+      -f "bestaudio/worst" \
       --hls-use-mpegts \
       -o -
     if [ -n "${STREAM_HTTP_PROXY:-}" ]; then
@@ -189,10 +218,10 @@ while true; do
       -content_type audio/mpeg \
       "${ICECAST_TARGET_LQ}"
     then
-      echo "[stream-relay] yt-dlp/ffmpeg exited, retry in 8s"
+      echo "[stream-relay] yt-dlp/ffmpeg exited"
       advance_url
     fi
-    sleep 8
+    after_exit_backoff "${START_TS}"
     continue
   fi
   set -- ffmpeg -hide_banner -loglevel warning \
@@ -248,8 +277,8 @@ while true; do
     "${ICECAST_TARGET_LQ}"
 
   if ! "$@"; then
-    echo "[stream-relay] ffmpeg exited, retry in 5s"
+    echo "[stream-relay] ffmpeg exited"
     advance_url
   fi
-  sleep 5
+  after_exit_backoff "${START_TS}"
 done

@@ -2,7 +2,7 @@
 # הגדרות ימות המשיח — שלוחות SIP ל-FreeSWITCH
 # ============================================================
 # IP שרת (FreeSWITCH):
-#   91.98.89.80:5060
+#   2.28.112.88:5060
 #
 # אל תשתמש ב-music_on_hold / זרם בימות!
 #
@@ -21,35 +21,35 @@
 
 # --- שלוחה עם routing_extension=1 (או kanbet) — STREAM_1_URL ---
 type=routing_ip
-routing_ip=91.98.89.80
+routing_ip=2.28.112.88
 routing_ip_port=5060
 routing_extension=1
 routing_ip_dial_time=60
 
 # --- אותו שידור, איכות נמוכה (לא מנוי) ---
 # type=routing_ip
-# routing_ip=91.98.89.80
+# routing_ip=2.28.112.88
 # routing_ip_port=5060
 # routing_extension=101
 # routing_ip_dial_time=60
 
 # --- שלוחה עם routing_extension=2 (או kan11) — STREAM_2_URL ---
 # type=routing_ip
-# routing_ip=91.98.89.80
+# routing_ip=2.28.112.88
 # routing_ip_port=5060
 # routing_extension=2
 # routing_ip_dial_time=60
 
 # --- שלוחות 3–20 — העתק והחלף את המספר ---
 # type=routing_ip
-# routing_ip=91.98.89.80
+# routing_ip=2.28.112.88
 # routing_ip_port=5060
 # routing_extension=3
 # routing_ip_dial_time=60
 
 # --- שלוחת הדלקה / כיבוי שידורים ---
 # type=routing_ip
-# routing_ip=91.98.89.80
+# routing_ip=2.28.112.88
 # routing_ip_port=5060
 # routing_extension=streamctl
 # routing_ip_dial_time=30

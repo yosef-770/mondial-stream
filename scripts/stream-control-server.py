@@ -16,6 +16,9 @@ DOCKER_SOCK = "/var/run/docker.sock"
 
 WATCHDOG_INTERVAL_SEC = 60
 WATCHDOG_FAIL_THRESHOLD = 3
+# ריסון restart storm: cooldown בין restartים + מקסימום לשעה לכל שלוחה
+WATCHDOG_COOLDOWN_SEC = 900  # 15 דקות
+WATCHDOG_MAX_RESTARTS_PER_HOUR = 3
 
 CONTAINERS = {str(i): f"mondial-stream-relay-{i}" for i in range(1, 21)}
 ALIASES = {
@@ -141,14 +144,19 @@ def status_payload() -> dict:
 def watchdog_loop() -> None:
     """Restart configured relays that are running but stuck with Icecast off."""
     fail_counts = {name: 0 for name in CONTAINERS}
+    last_restart: dict[str, float] = {name: 0.0 for name in CONTAINERS}
+    restart_times: dict[str, list[float]] = {name: [] for name in CONTAINERS}
     print(
         f"[watchdog] started (interval={WATCHDOG_INTERVAL_SEC}s, "
-        f"threshold={WATCHDOG_FAIL_THRESHOLD})",
+        f"threshold={WATCHDOG_FAIL_THRESHOLD}, "
+        f"cooldown={WATCHDOG_COOLDOWN_SEC}s, "
+        f"max={WATCHDOG_MAX_RESTARTS_PER_HOUR} restarts/h)",
         flush=True,
     )
     while True:
         time.sleep(WATCHDOG_INTERVAL_SEC)
         active = configured_channels()
+        now = time.time()
         for channel, container in CONTAINERS.items():
             if channel not in active:
                 fail_counts[channel] = 0
@@ -179,9 +187,35 @@ def watchdog_loop() -> None:
             if fail_counts[channel] < WATCHDOG_FAIL_THRESHOLD:
                 continue
 
+            # נקה restartים ישנים משעה אחורה
+            hour_ago = now - 3600
+            recent = [t for t in restart_times[channel] if t >= hour_ago]
+            restart_times[channel] = recent
+
+            since_last = now - last_restart[channel]
+            if last_restart[channel] and since_last < WATCHDOG_COOLDOWN_SEC:
+                remain = int(WATCHDOG_COOLDOWN_SEC - since_last)
+                print(
+                    f"[watchdog] {channel} stuck off — cooldown {remain}s left, skip restart",
+                    flush=True,
+                )
+                fail_counts[channel] = 0
+                continue
+
+            if len(recent) >= WATCHDOG_MAX_RESTARTS_PER_HOUR:
+                print(
+                    f"[watchdog] {channel} stuck off — hit max "
+                    f"{WATCHDOG_MAX_RESTARTS_PER_HOUR} restarts/hour, skip",
+                    flush=True,
+                )
+                fail_counts[channel] = 0
+                continue
+
             print(f"[watchdog] {channel} stuck off — restarting {container}", flush=True)
             ok, detail = container_action("restart", container)
             fail_counts[channel] = 0
+            last_restart[channel] = now
+            restart_times[channel].append(now)
             print(
                 f"[watchdog] restart {container}: {'ok' if ok else 'failed'} ({detail})",
                 flush=True,
